@@ -1,11 +1,10 @@
 import time
 from itertools import chain, combinations
-from typing import Any
 import networkx as nx
 import random
 
 
-def valid_result(graph: Any, group: set[int]) -> bool:
+def valid_result(graph: nx.DiGraph, group: set[int]) -> bool:
     unconnected_nodes = set(graph.nodes) - group
     connected_nodes = set()
     for node in unconnected_nodes:
@@ -13,6 +12,20 @@ def valid_result(graph: Any, group: set[int]) -> bool:
             connected_nodes.add(node)
 
     return connected_nodes == unconnected_nodes
+
+
+def get_all_unconnected_groups_2(graph: nx.Graph) -> list[set[int]]:
+    def is_separated(graph: nx.Graph, group: set[str]):
+        for edge in list(graph.edges):
+            edge_set = {edge[0], edge[1]}
+            groups_to_remove = list()
+            if edge_set.issubset(group):
+                groups_to_remove.append(group)
+
+    # remove connected groups
+    nodes = list(graph.nodes)
+
+    return possible_groups
 
 
 def get_all_unconnected_groups(graph) -> list[set[int]]:
@@ -35,7 +48,7 @@ def get_all_unconnected_groups(graph) -> list[set[int]]:
     return possible_groups
 
 
-def solve(graph) -> None:
+def solve(graph: nx.DiGraph) -> None:
     possible_groups = get_all_unconnected_groups(graph)
 
     sorted_possible_groups = sorted(possible_groups, key=lambda x: len(x), reverse=True)
@@ -48,14 +61,14 @@ def solve(graph) -> None:
         print('not found')
 
 
-def solve_example() -> None:
+def load_example() -> nx.DiGraph:
     # open file and process
     path = 'ex_1.txt'
     with open(path, 'r') as f:
         graph = nx.drawing.nx_pydot.read_dot(f)
     graph.remove_node('\\n')  # only needed if not formatted correctly
     # remove groups that aren't connected to rest of the nodes
-    solve(graph)
+    return graph
 
 
 def create_random_directed_graph(nodes: int, edges: int):
@@ -76,9 +89,9 @@ def create_random_directed_graph(nodes: int, edges: int):
 
 if __name__ == '__main__':
     # Example
-    solve_example()
-    # Random
-    graph = create_random_directed_graph(10, 100)
+    graph = load_example()
+    # graph = create_random_directed_graph(200, 14000)
+
     t = time.time()
     solve(graph)
-    print(time.time() - t)
+    print(f"time: {time.time() - t}s")
