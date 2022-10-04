@@ -1,6 +1,8 @@
+import time
 from itertools import chain, combinations
 from typing import Any
-import networkx
+import networkx as nx
+import random
 
 
 def valid_result(graph: Any, group: set[int]) -> bool:
@@ -46,15 +48,37 @@ def solve(graph) -> None:
         print('not found')
 
 
-def main() -> None:
+def solve_example() -> None:
     # open file and process
     path = 'ex_1.txt'
     with open(path, 'r') as f:
-        graph = networkx.drawing.nx_pydot.read_dot(f)
+        graph = nx.drawing.nx_pydot.read_dot(f)
     graph.remove_node('\\n')  # only needed if not formatted correctly
     # remove groups that aren't connected to rest of the nodes
     solve(graph)
 
 
+def create_random_directed_graph(nodes: int, edges: int):
+    G = nx.DiGraph()
+    for i in range(nodes):
+        G.add_node(str(i))
+    e = set()
+    for i in range(edges):
+        num_1 = random.randint(0, nodes)
+        num_2 = random.randint(0, nodes)
+        while num_1 == num_2:
+            num_2 = random.randint(0, nodes)
+        e.add((str(num_1), str(num_2)))
+    for s in e:
+        G.add_edge(s[0], s[1])
+    return G
+
+
 if __name__ == '__main__':
-    main()
+    # Example
+    solve_example()
+    # Random
+    graph = create_random_directed_graph(10, 100)
+    t = time.time()
+    solve(graph)
+    print(time.time() - t)
