@@ -15,17 +15,7 @@ def valid_result(graph: nx.DiGraph, group: set[int]) -> bool:
 
 
 def get_all_unconnected_groups_2(graph: nx.Graph) -> list[set[int]]:
-    def is_separated(graph: nx.Graph, group: set[str]):
-        for edge in list(graph.edges):
-            edge_set = {edge[0], edge[1]}
-            groups_to_remove = list()
-            if edge_set.issubset(group):
-                groups_to_remove.append(group)
-
-    # remove connected groups
-    nodes = list(graph.nodes)
-
-    return [set(nx.maximal_independent_set(nx.Graph(graph)))]
+    return [set(group) for group in nx.find_cliques(nx.complement(nx.Graph(graph)))]
 
 
 def get_all_unconnected_groups(graph) -> list[set[int]]:
@@ -49,8 +39,7 @@ def get_all_unconnected_groups(graph) -> list[set[int]]:
 
 
 def solve(graph: nx.DiGraph) -> None:
-    possible_groups = get_all_unconnected_groups(graph)
-
+    possible_groups = get_all_unconnected_groups_2(graph)
     sorted_possible_groups = sorted(possible_groups, key=lambda x: len(x), reverse=True)
 
     for group in sorted_possible_groups:
@@ -89,8 +78,8 @@ def create_random_directed_graph(nodes: int, edges: int):
 
 if __name__ == '__main__':
     # Example
-    graph = load_example()
-    # graph = create_random_directed_graph(200, 14000)
+    # graph = load_example()
+    graph = create_random_directed_graph(200, 14000)
 
     t = time.time()
     solve(graph)
