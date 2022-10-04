@@ -5,6 +5,7 @@ import random
 
 
 def valid_result(graph: nx.DiGraph, group: set[int]) -> bool:
+    # checks if independent set is connected to the other nodes
     unconnected_nodes = set(graph.nodes) - group
     connected_nodes = set()
     for node in unconnected_nodes:
@@ -14,16 +15,17 @@ def valid_result(graph: nx.DiGraph, group: set[int]) -> bool:
     return connected_nodes == unconnected_nodes
 
 
-def get_all_unconnected_groups_2(graph: nx.Graph) -> list[set[int]]:
+def get_all_maximal_independent_subsets(graph: nx.Graph) -> list[set[int]]:
     """
     https://blog.actorsfit.com/a?ID=00700-d24fd865-1a37-4932-93cc-288a39ba765b
-    all maximal independent subsets contain all of the non-maximal independent subsets,
+    all maximal independent subsets contain all the non-maximal independent subsets,
     hence we can just focus on maximal ones
     """
     return [set(group) for group in nx.find_cliques(nx.complement(nx.Graph(graph)))]
 
 
 def get_all_unconnected_groups(graph) -> list[set[int]]:
+    # LEGACY
     # bruteforce, doesn't work for >10 nodes
     def powerset(nodes: list[str]) -> list[set[str]]:
         """
@@ -45,10 +47,9 @@ def get_all_unconnected_groups(graph) -> list[set[int]]:
 
 
 def solve(graph: nx.DiGraph) -> None:
-    possible_groups = get_all_unconnected_groups_2(graph)
-    sorted_possible_groups = sorted(possible_groups, key=lambda x: len(x), reverse=True)
-
-    for group in sorted_possible_groups:
+    all_maximal_independent_subsets = get_all_maximal_independent_subsets(graph)
+    sorted_all_maximal_independent_subsets = sorted(all_maximal_independent_subsets, key=lambda x: len(x), reverse=True)
+    for group in sorted_all_maximal_independent_subsets:
         if valid_result(graph, group):
             print(group)
             break
