@@ -15,10 +15,16 @@ def valid_result(graph: nx.DiGraph, group: set[int]) -> bool:
 
 
 def get_all_unconnected_groups_2(graph: nx.Graph) -> list[set[int]]:
+    """
+    https://blog.actorsfit.com/a?ID=00700-d24fd865-1a37-4932-93cc-288a39ba765b
+    all maximal independent subsets contain all of the non-maximal independent subsets,
+    hence we can just focus on maximal ones
+    """
     return [set(group) for group in nx.find_cliques(nx.complement(nx.Graph(graph)))]
 
 
 def get_all_unconnected_groups(graph) -> list[set[int]]:
+    # bruteforce, doesn't work for >10 nodes
     def powerset(nodes: list[str]) -> list[set[str]]:
         """
         https://stackoverflow.com/questions/1482308/how-to-get-all-subsets-of-a-set-powerset/1482316#1482316
