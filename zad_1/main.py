@@ -25,7 +25,7 @@ def get_all_unconnected_groups_2(graph: nx.Graph) -> list[set[int]]:
     # remove connected groups
     nodes = list(graph.nodes)
 
-    return possible_groups
+    return [set(nx.maximal_independent_set(nx.Graph(graph)))]
 
 
 def get_all_unconnected_groups(graph) -> list[set[int]]:
