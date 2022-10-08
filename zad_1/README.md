@@ -1,3 +1,5 @@
+## Instalacja pakietow
+```pip install -r requirements.txt```
 ## Rozwiazanie 1:
 
 Wykorzystanie wszystkich permutacji group (brute force) z uzyciem funkcji get_all_unconnected_groups()
