@@ -59,9 +59,8 @@ def solve(graph: nx.DiGraph) -> None:
         print('not found')
 
 
-def load_example() -> nx.DiGraph:
+def load_example(path: str) -> nx.DiGraph:
     # open file and process
-    path = 'ex_1.txt'
     with open(path, 'r') as f:
         graph = nx.drawing.nx_pydot.read_dot(f)
     graph.remove_node('\\n')  # only needed if not formatted correctly
@@ -71,25 +70,24 @@ def load_example() -> nx.DiGraph:
 
 def create_random_directed_graph(nodes: int, edges: int) -> networkx.DiGraph:
     G = nx.DiGraph()
-    for i in range(nodes):
-        G.add_node(str(i))
-    e = set()
-    for i in range(edges):
+    for node in range(nodes):
+        G.add_node(str(node))
+    edges_set = set()
+    for edge in range(edges):
         num_1 = random.randint(0, nodes)
         num_2 = random.randint(0, nodes)
         while num_1 == num_2:
             num_2 = random.randint(0, nodes)
-        e.add((str(num_1), str(num_2)))
-    for s in e:
-        G.add_edge(s[0], s[1])
+        edges_set.add((str(num_1), str(num_2)))
+    for edge in edges_set:
+        G.add_edge(edge[0], edge[1])
     return G
 
 
 if __name__ == '__main__':
     # Example
-    #graph = load_example()
-    graph = create_random_directed_graph(200, 14000)
-
+    graph = load_example('ex_1.txt')
+    # graph = create_random_directed_graph(200, 14000)
     t = time.time()
     solve(graph)
     print(f"time: {time.time() - t}s")
