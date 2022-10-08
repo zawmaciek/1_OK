@@ -1,18 +1,18 @@
+import random
 import time
 from itertools import chain, combinations
+
+import networkx
 import networkx as nx
-import random
 
 
 def valid_result(graph: nx.DiGraph, group: set[int]) -> bool:
     # checks if independent set is connected to the other nodes
     unconnected_nodes = set(graph.nodes) - group
-    connected_nodes = set()
     for node in unconnected_nodes:
-        if group & set(graph.successors(node)):
-            connected_nodes.add(node)
-
-    return connected_nodes == unconnected_nodes
+        if not group & set(graph.successors(node)):
+            return False
+    return True
 
 
 def get_all_maximal_independent_subsets(graph: nx.Graph) -> list[set[int]]:
@@ -24,7 +24,7 @@ def get_all_maximal_independent_subsets(graph: nx.Graph) -> list[set[int]]:
     return [set(group) for group in nx.find_cliques(nx.complement(nx.Graph(graph)))]
 
 
-def get_all_unconnected_groups(graph) -> list[set[int]]:
+def get_all_unconnected_groups(graph: networkx.DiGraph) -> list[set[int]]:
     # LEGACY
     # bruteforce, doesn't work for >10 nodes
     def powerset(nodes: list[str]) -> list[set[str]]:
@@ -47,8 +47,10 @@ def get_all_unconnected_groups(graph) -> list[set[int]]:
 
 
 def solve(graph: nx.DiGraph) -> None:
-    all_maximal_independent_subsets = get_all_maximal_independent_subsets(graph)
-    sorted_all_maximal_independent_subsets = sorted(all_maximal_independent_subsets, key=lambda x: len(x), reverse=True)
+    # For bruteforce uncomment line below, and comment line 52
+    # indepentent_subsets = get_all_unconnected_groups(graph)
+    indepentent_subsets = get_all_maximal_independent_subsets(graph)
+    sorted_all_maximal_independent_subsets = sorted(indepentent_subsets, key=lambda x: len(x), reverse=True)
     for group in sorted_all_maximal_independent_subsets:
         if valid_result(graph, group):
             print(group)
@@ -67,7 +69,7 @@ def load_example() -> nx.DiGraph:
     return graph
 
 
-def create_random_directed_graph(nodes: int, edges: int):
+def create_random_directed_graph(nodes: int, edges: int) -> networkx.DiGraph:
     G = nx.DiGraph()
     for i in range(nodes):
         G.add_node(str(i))
@@ -85,7 +87,7 @@ def create_random_directed_graph(nodes: int, edges: int):
 
 if __name__ == '__main__':
     # Example
-    # graph = load_example()
+    #graph = load_example()
     graph = create_random_directed_graph(200, 14000)
 
     t = time.time()
