@@ -13,3 +13,5 @@ Rozwiazanie opiera sie na tym ze maksimum klik dopełnienia grafu oryginalnego t
 oryginalnego.
 
 Dla grafow o liczbie wierzcholkow ~200 wynosi okolo 5s.
+
+Project history and repository: https://github.com/zawmaciek/1_Sem/tree/main/zad_1
