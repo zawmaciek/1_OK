@@ -1,6 +1,7 @@
 import random
 import time
 from itertools import chain, combinations
+from typing import Optional
 
 import networkx
 import networkx as nx
@@ -46,7 +47,7 @@ def get_all_unconnected_groups(graph: networkx.DiGraph) -> list[set[int]]:
     return possible_groups
 
 
-def solve(graph: nx.DiGraph) -> None:
+def solve(graph: nx.DiGraph) -> Optional[set[int]]:
     # For bruteforce uncomment line below, and comment line 52
     # indepentent_subsets = get_all_unconnected_groups(graph)
     indepentent_subsets = get_all_maximal_independent_subsets(graph)
@@ -54,9 +55,9 @@ def solve(graph: nx.DiGraph) -> None:
     for group in sorted_all_maximal_independent_subsets:
         if valid_result(graph, group):
             print(group)
-            break
-    else:
-        print('not found')
+            return group
+    print('no solution found')
+    return None
 
 
 def load_example(path: str) -> nx.DiGraph:
@@ -84,10 +85,24 @@ def create_random_directed_graph(nodes: int, edges: int) -> networkx.DiGraph:
     return G
 
 
+def validate_solution(graph: networkx.DiGraph, solution: set[int]) -> bool:
+    # check if group has no connections
+    for edge in list(graph.edges):
+        edge_set = {edge[0], edge[1]}
+        if edge_set.issubset(solution):
+            return False
+    # check if every node outside of group is connected to the group
+    if not valid_result(graph, solution):
+        return False
+    return True
+
+
 if __name__ == '__main__':
     # Example
     graph = load_example('ex_1.txt')
-    # graph = create_random_directed_graph(200, 14000)
+    #graph = create_random_directed_graph(200, 14000)
     t = time.time()
-    solve(graph)
+    solution = solve(graph)
     print(f"time: {time.time() - t}s")
+    if solution:
+        print(f"RESPONSE VALID: {str(validate_solution(graph, solution)).upper()}")
