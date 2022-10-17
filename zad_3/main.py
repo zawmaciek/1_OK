@@ -8,7 +8,7 @@ max 𝑧 = 141𝑥1 + 393𝑥2 + 273𝑥3 + 804𝑥4 + 175𝑥5
 from pulp import LpMaximize, LpProblem, LpVariable
 
 """PuLP is an LP modeler written in Python. PuLP can generate MPS or LP files and call GLPK, COIN-OR CLP/CBC, CPLEX, GUROBI, MOSEK, XPRESS, CHOCO, MIPCL, SCIP to solve linear problems."""
-model = LpProblem(name="zad_2", sense=LpMaximize)
+model = LpProblem(name="zad_3", sense=LpMaximize)
 # create variables
 x1 = LpVariable(name="x1", lowBound=0, upBound=20)
 x2 = LpVariable(name="x2", lowBound=0, upBound=20)
