@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from Ztp_Project.Elviron.elviron import Elviron
+from elviron import Elviron
 
 app = FastAPI()
 elviron = Elviron()

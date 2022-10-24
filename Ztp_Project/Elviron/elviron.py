@@ -1,7 +1,9 @@
-from Ztp_Project.Elviron.movie import MovieID
-from Ztp_Project.Elviron.orm import ORM
+
 from tqdm import tqdm
 import numpy as np
+
+from movie import MovieID
+from orm import ORM
 
 """0
 244982
@@ -30,7 +32,7 @@ import numpy as np
 
 class Elviron:
     def __init__(self):
-        self.orm = ORM(db_path='C:\Users\zawma\Desktop\OK_1Sem\Ztp_Project\movies_data.db', minimal_views_of_film=300)
+        self.orm = ORM(db_path=r'C:\Users\zawma\Desktop\OK_1Sem\Ztp_Project\movies_data.db', minimal_views_of_film=300)
         self.minimal_views = 400
 
     def connect_to_db(self) -> None:

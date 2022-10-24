@@ -2,7 +2,7 @@ import sqlite3
 
 from typing import NewType
 
-from Ztp_Project.Elviron.movie import MovieID
+from movie import MovieID
 
 UserID = NewType("UserID", str)
 
