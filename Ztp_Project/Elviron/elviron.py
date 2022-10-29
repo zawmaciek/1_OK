@@ -5,7 +5,10 @@ import numpy as np
 from movie import MovieID
 from orm import ORM
 
-"""0
+"""
+TODO: remove
+minimal views vs user count
+0
 244982
 
 50
@@ -32,7 +35,9 @@ from orm import ORM
 
 class Elviron:
     def __init__(self):
+        # TODO: Adjust minimal views of the film
         self.orm = ORM(db_path=r'C:\Users\zawma\Desktop\OK_1Sem\Ztp_Project\movies_data.db', minimal_views_of_film=300)
+        # TODO: Adjust minimal views of user
         self.minimal_views = 400
 
     def connect_to_db(self) -> None:
@@ -49,6 +54,7 @@ class Elviron:
         ratings_map = self.orm.get_ratings_count_per_user()
         print(len(ratings_map))
         filtered_user_ids = [user_id for user_id in ratings_map if ratings_map[user_id] > self.minimal_views]
+        # TODO: add multiprocessing, group by genre, optimise
         for user_id in tqdm(filtered_user_ids):
             ratings = self.orm.get_ratings_per_user(user_id)
             for i in range(len(ratings)):
