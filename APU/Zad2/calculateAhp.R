@@ -1,0 +1,6 @@
+library(ahp)
+carAhp <- Load('C:/Users/zawma/Desktop/OK_1Sem/APU/Zad2/data.ahp')
+Calculate(carAhp)
+Visualize(carAhp)
+Analyze(carAhp)
+AnalyzeTable(carAhp)
