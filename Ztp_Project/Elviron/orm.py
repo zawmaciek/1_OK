@@ -1,3 +1,4 @@
+import re
 import sqlite3
 
 from typing import NewType
@@ -32,6 +33,15 @@ class ORM:
             (user_id, self.minimal_views)).fetchall()
         return [(MovieID(result[0]), float(result[1])) for result in results]
 
+    def get_genres_per_movie_id(self) -> dict[MovieID, set[str]]:
+        def parse_genres(text: str) -> set[str]:
+            return set(re.findall(r"'name':\s?'(.*?)'", text))
+
+        results = self.cur.execute(
+            "SELECT id,genres from movies_metadata WHERE CAST(vote_count AS int)>?",
+            (self.minimal_views,)).fetchall()
+        return {MovieID(result[0]): parse_genres(result[1]) for result in results}
+
     def disconnect(self):
         self.con.close()
 
@@ -39,3 +49,8 @@ class ORM:
         results = self.cur.execute('SELECT id from movies_metadata WHERE CAST(vote_count AS int)>?',
                                    (self.minimal_views,)).fetchall()
         return [MovieID(result[0]) for result in results]
+
+    def get_all_ids_to_names(self) -> dict[MovieID, str]:
+        results = self.cur.execute('SELECT id, title from movies_metadata WHERE CAST(vote_count AS int)>?',
+                                   (self.minimal_views,)).fetchall()
+        return {MovieID(result[0]): result[1] for result in results}

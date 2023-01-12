@@ -2,12 +2,14 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from elviron import Elviron
-from movie import MovieID
 
 app = FastAPI()
 elviron = Elviron()
+
+
 class MovieMatchRequest(BaseModel):
-    ids: list[int]
+    titles: list[str]
+
 
 @app.on_event("startup")
 def startup_event() -> None:
@@ -20,9 +22,9 @@ async def calculate() -> None:
 
 
 @app.post("/match")
-async def match(request_body:MovieMatchRequest):
-    ids = [MovieID(id) for id in request_body.ids]
-    result = elviron.match(ids)
+async def match(request_body: MovieMatchRequest):
+    titles = [title for title in request_body.titles]
+    result = elviron.match(titles)
     return result
 
 
