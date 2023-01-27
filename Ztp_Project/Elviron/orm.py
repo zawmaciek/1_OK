@@ -1,6 +1,6 @@
 import re
 import sqlite3
-
+from collections import defaultdict
 from typing import NewType
 
 from movie import MovieID
@@ -9,6 +9,8 @@ UserID = NewType("UserID", str)
 
 
 class ORM:
+    """Facade"""
+
     def __init__(self, db_path: str, minimal_views_of_film: int = 300) -> None:
         self.path = db_path
         self.con = None
@@ -27,11 +29,14 @@ class ORM:
             (self.minimal_views,)).fetchall()
         return {UserID(result[0]): result[1] for result in results}
 
-    def get_ratings_per_user(self, user_id: UserID) -> list[tuple[MovieID, float]]:
+    def get_ratings_per_user(self) -> dict[str, list[tuple[MovieID, float]]]:
+        ratings_map = defaultdict(list)
         results = self.cur.execute(
-            "SELECT A.movieId,A.rating FROM ratings A WHERE A.userId=? AND A.movieId IN (SELECT B.id from movies_metadata B WHERE CAST(B.vote_count AS int)>?)",
-            (user_id, self.minimal_views)).fetchall()
-        return [(MovieID(result[0]), float(result[1])) for result in results]
+            "SELECT A.userId,A.movieId,A.rating FROM ratings A WHERE A.movieId IN (SELECT B.id from movies_metadata B WHERE CAST(B.vote_count AS int)>?)",
+            (self.minimal_views,)).fetchall()
+        for result in results:
+            ratings_map[result[0]].append((MovieID(result[1]), float(result[2])))
+        return ratings_map
 
     def get_genres_per_movie_id(self) -> dict[MovieID, set[str]]:
         def parse_genres(text: str) -> set[str]:
@@ -52,5 +57,10 @@ class ORM:
 
     def get_all_ids_to_names(self) -> dict[MovieID, str]:
         results = self.cur.execute('SELECT id, title from movies_metadata WHERE CAST(vote_count AS int)>?',
+                                   (self.minimal_views,)).fetchall()
+        return {MovieID(result[0]): result[1] for result in results}
+
+    def get_all_overviews_by_ids(self) -> dict[MovieID, str]:
+        results = self.cur.execute('SELECT id, overview from movies_metadata WHERE CAST(vote_count AS int)>?',
                                    (self.minimal_views,)).fetchall()
         return {MovieID(result[0]): result[1] for result in results}

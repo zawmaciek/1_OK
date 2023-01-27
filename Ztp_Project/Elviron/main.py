@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from elviron import Elviron
+from elviron import MatcherFactory, MatcherType
 
 app = FastAPI()
-elviron = Elviron()
+matcher = MatcherFactory.build(type=MatcherType.ELVIRON)
 
 
 class MovieMatchRequest(BaseModel):
@@ -13,21 +13,21 @@ class MovieMatchRequest(BaseModel):
 
 @app.on_event("startup")
 def startup_event() -> None:
-    elviron.connect_to_db()
+    matcher.connect_to_db()
 
 
 @app.post("/calculate")
 async def calculate() -> None:
-    elviron.calculate()
+    matcher.calculate()
 
 
 @app.post("/match")
 async def match(request_body: MovieMatchRequest):
     titles = [title for title in request_body.titles]
-    result = elviron.match(titles)
+    result = matcher.match(titles)
     return result
 
 
 @app.on_event("shutdown")
 def shutdown_event() -> None:
-    elviron.exit()
+    matcher.exit()
